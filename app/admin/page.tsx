@@ -95,7 +95,14 @@ export default function AdminPage() {
   );
 }
 
-const StatCard = ({ icon: Icon, label, value, type }: any) => {
+interface StatCardProps {
+  icon: React.ElementType;
+  label: string;
+  value: number;
+  type: 'success' | 'warning' | 'danger';
+}
+
+const StatCard = ({ icon: Icon, label, value, type }: StatCardProps) => {
   const colors = {
     success: 'bg-green-100 text-green-600',
     warning: 'bg-yellow-100 text-yellow-600',
