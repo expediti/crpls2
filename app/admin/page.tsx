@@ -5,7 +5,7 @@ import { INITIAL_APPOINTMENTS, MOCK_DOCTORS } from '@/constants';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Shield, Users, Calendar, ArrowLeft } from 'lucide-react';
+import { Shield, Users, Calendar, ArrowLeft, HeartPulse } from 'lucide-react';
 import { formatDateTime } from '@/lib/utils';
 
 export default function AdminPage() {
@@ -23,12 +23,13 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-       <header className="bg-slate-900 text-white px-8 py-4 flex justify-between items-center sticky top-0 z-10">
+       <header className="bg-slate-900 text-white px-8 py-4 flex justify-between items-center sticky top-0 z-10 border-b border-slate-800">
           <div className="flex items-center gap-2 font-bold text-xl">
-             <Shield className="w-6 h-6" /> MedAdmin
+             <HeartPulse className="w-6 h-6 text-blue-500" /> 
+             <span>CarePulse <span className="text-slate-500 text-sm font-normal ml-1">Admin</span></span>
           </div>
           <Link href="/">
-            <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10 gap-2">
+            <Button variant="ghost" className="text-slate-300 hover:text-white hover:bg-white/10 gap-2">
                 <ArrowLeft className="w-4 h-4" /> Back to Site
             </Button>
           </Link>
@@ -36,8 +37,8 @@ export default function AdminPage() {
 
        <main className="p-8 max-w-7xl mx-auto w-full space-y-8">
           <div className="space-y-2">
-             <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-             <p className="text-slate-500">Manage your facility appointments.</p>
+             <h1 className="text-3xl font-bold text-slate-900">Dashboard Overview</h1>
+             <p className="text-slate-500">Welcome back, Administrator. Here's what's happening today.</p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
