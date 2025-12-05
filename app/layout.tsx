@@ -1,14 +1,12 @@
-import React from 'react';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "@/styles/globals.css";
-import { cn } from "@/lib/utils";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CarePulse",
-  description: "A comprehensive medical appointment booking system.",
+  title: "MedCare Connect - Healthcare Made Simple",
+  description: "Book appointments with verified doctors and manage your health records",
 };
 
 export default function RootLayout({
@@ -18,9 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen bg-slate-50 font-sans antialiased", inter.className)}>
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
