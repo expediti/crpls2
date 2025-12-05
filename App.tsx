@@ -89,7 +89,10 @@ export default function App() {
       )}
 
       {!currentUser ? (
-        <AuthScreen onLogin={handleLogin} />
+        <AuthScreen 
+          onLogin={handleLogin} 
+          onBack={() => setShowLanding(true)}
+        />
       ) : currentUser.role === 'admin' ? (
         <AdminDashboard 
           appointments={appointments} 
