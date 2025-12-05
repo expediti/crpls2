@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { INITIAL_APPOINTMENTS, MOCK_DOCTORS } from '@/constants';
 import { StatusBadge } from '@/components/StatusBadge';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { HeartPulse, Calendar, Users, Shield, ArrowLeft } from 'lucide-react';
 import { formatDateTime } from '@/lib/utils';

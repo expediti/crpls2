@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { User, Appointment } from '@/lib/Type';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { HeartPulse, Plus, Calendar, Clock, LogOut } from 'lucide-react';
 import { StatusBadge } from '@/components/StatusBadge';
 import { AppointmentModal } from '@/components/AppointmentModal';
