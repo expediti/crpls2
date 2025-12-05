@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 import { 
   Shield, ArrowRight, Activity, Calendar as CalIcon, Clock, 
   Stethoscope, Users, CheckCircle, Menu, X, ChevronDown 
