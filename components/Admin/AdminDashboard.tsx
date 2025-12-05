@@ -1,6 +1,6 @@
 import React from 'react';
-import { Appointment } from '../../types';
-import { Button } from '../ui/button';
+import { Appointment } from '@/lib/Type';
+import { Button } from '@/components/ui/button';
 import { Users, Calendar, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 
 interface AdminDashboardProps {

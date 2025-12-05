@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { User, Appointment, Doctor } from '../../types';
-import { MOCK_DOCTORS } from '../../constants';
-import { Button } from '../ui/button';
-import { Calendar, Clock, MapPin, X, Plus, Bell, CheckCircle, User as UserIcon } from 'lucide-react';
+import { User, Appointment } from '@/lib/Type';
+import { MOCK_DOCTORS } from '@/constants';
+import { Button } from '@/components/ui/button';
+import { Calendar, Clock, Plus, Bell, CheckCircle, User as UserIcon } from 'lucide-react';
 import { BookingModal } from './BookingModal';
 
 interface PatientDashboardProps {

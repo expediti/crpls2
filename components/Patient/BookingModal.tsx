@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { MOCK_DOCTORS } from '../../constants';
-import { Doctor, Appointment } from '../../types';
-import { Button } from '../ui/button';
-import { X, Calendar as CalIcon, Clock, Check, User } from 'lucide-react';
+import { MOCK_DOCTORS } from '@/constants';
+import { Doctor, Appointment } from '@/lib/Type';
+import { Button } from '@/components/ui/button';
+import { X, Calendar as CalIcon, Check } from 'lucide-react';
 
 interface BookingModalProps {
   isOpen: boolean;
