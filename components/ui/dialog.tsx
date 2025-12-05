@@ -5,7 +5,7 @@ import { X } from "lucide-react"
 interface DialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 export function Dialog({ open, onOpenChange, children }: DialogProps) {
@@ -27,7 +27,7 @@ export function Dialog({ open, onOpenChange, children }: DialogProps) {
   )
 }
 
-export function DialogContent({ children, className }: { children: React.ReactNode, className?: string }) {
+export function DialogContent({ children, className }: { children?: React.ReactNode, className?: string }) {
   return <div className={cn("grid gap-4 p-6", className)}>{children}</div>
 }
 
