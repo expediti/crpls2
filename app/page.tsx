@@ -4,19 +4,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
-  Shield, 
-  ArrowRight, 
-  UserCheck, 
-  Lock, 
-  Activity, 
-  Calendar as CalIcon, 
-  Clock,
-  Phone,
-  CheckCircle,
-  Star,
-  Stethoscope,
-  HeartPulse,
-  Plus
+  Shield, ArrowRight, Activity, Calendar as CalIcon, Clock, 
+  Stethoscope, Users, CheckCircle, Menu, X, ChevronDown 
 } from 'lucide-react';
 import { MOCK_DOCTORS, INITIAL_APPOINTMENTS } from '@/constants';
 import { Appointment, User } from '@/lib/Type';
@@ -30,38 +19,23 @@ export default function Home() {
   const [phone, setPhone] = useState('');
   const [appointments, setAppointments] = useState<Appointment[]>(INITIAL_APPOINTMENTS);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showLanding, setShowLanding] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Simple Mock Login Logic
+  // Simple Mock Login
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (phone === '0000') {
+      window.location.href = '/admin';
+      return;
+    }
 
-    // Simulate network delay for realism
-    setTimeout(() => {
-        if(phone === '0000') {
-            window.location.href = '/admin'; // Force navigation to admin
-            return;
-        }
-
-        if(phone.length < 3) {
-            alert("Please enter a valid phone number");
-            setIsLoading(false);
-            return;
-        }
-
-        // Simulate patient login success
-        setUser({
-            id: 'p-' + Date.now(),
-            name: 'Patient User',
-            phone: phone,
-            role: 'patient',
-            age: 30
-        });
-        setIsLoading(false);
-    }, 800);
+    setUser({
+      id: 'p-' + Date.now(),
+      name: 'Patient User',
+      phone: phone,
+      role: 'patient',
+      age: 30
+    });
   };
 
   const handleCreateAppointment = (data: any) => {
@@ -79,348 +53,402 @@ export default function Home() {
     setAppointments([...appointments, newApt]);
   };
 
-  const openAuth = (mode: 'signin' | 'signup') => {
-    setAuthMode(mode);
-    setShowLanding(false);
-  };
-
-  // ----------------------------------------------------------------------
-  // VIEW 1: PATIENT DASHBOARD (Logged In)
-  // ----------------------------------------------------------------------
+  // PATIENT DASHBOARD VIEW
   if (user) {
-    const myAppointments = appointments.filter(a => a.patientId === user.id || a.patientId === 'p1'); 
-    
+    const myAppointments = appointments.filter(a => a.patientId === user.id || a.patientId === 'p1');
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-screen bg-slate-50">
-        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4 border-b border-slate-200 pb-8">
-            <div className="flex items-center gap-4">
-                <div className="bg-blue-600 p-2 rounded-lg">
-                    <HeartPulse className="w-6 h-6 text-white" />
+      <div className="min-h-screen bg-white">
+        {/* Dashboard Navigation */}
+        <nav className="border-b border-gray-200 sticky top-0 bg-white z-50">
+          <div className="container mx-auto px-4 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-white" />
                 </div>
-                <div>
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">CarePulse</h1>
-                    <p className="text-slate-500 text-sm">Patient Portal • {user.name}</p>
-                </div>
-            </div>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setUser(null)}>Log Out</Button>
-              <Button onClick={() => setIsModalOpen(true)} className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20">
-                <Plus className="w-4 h-4 mr-2" /> New Appointment
+                <span className="text-xl font-bold text-black">MedCare</span>
+              </div>
+              <Button 
+                onClick={() => setUser(null)} 
+                variant="outline"
+                className="border-black text-black hover:bg-black hover:text-white"
+              >
+                Sign Out
               </Button>
             </div>
-        </header>
+          </div>
+        </nav>
 
-        <section className="mb-12">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900">
-              <Activity className="w-5 h-5 text-blue-600" />
-              Your Appointments
-            </h2>
+        {/* Dashboard Content */}
+        <div className="container mx-auto px-4 lg:px-8 py-8 lg:py-12">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-black">Your Appointments</h1>
+              <p className="text-gray-600 mt-2">Manage your healthcare schedule</p>
+            </div>
+            <Button 
+              onClick={() => setIsModalOpen(true)} 
+              className="bg-black hover:bg-gray-800 text-white w-full lg:w-auto"
+            >
+              <CalIcon className="w-4 h-4 mr-2" />
+              Book New Appointment
+            </Button>
+          </div>
+
+          {/* Appointments Grid */}
+          <div className="grid gap-4 lg:gap-6">
             {myAppointments.length === 0 ? (
-              <div className="bg-white p-12 rounded-xl border border-dashed border-slate-300 text-center text-slate-500">
-                <p>No appointments found.</p>
-                <Button variant="link" onClick={() => setIsModalOpen(true)} className="mt-2 text-blue-600">
-                    Book your first one today
+              <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-xl">
+                <CalIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No appointments yet</h3>
+                <p className="text-gray-600 mb-6">Book your first appointment to get started</p>
+                <Button 
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-black hover:bg-gray-800 text-white"
+                >
+                  Book Appointment
                 </Button>
               </div>
             ) : (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {myAppointments.map(apt => {
-                      const doc = MOCK_DOCTORS.find(d => d.id === apt.doctorId);
-                      return (
-                          <div key={apt.id} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
-                              <div className="flex justify-between items-start mb-4">
-                                  <div className="flex items-center gap-3">
-                                      <div className="relative">
-                                        <img src={doc?.image} alt={doc?.name} className="w-12 h-12 rounded-full object-cover border border-slate-100 bg-slate-100"/>
-                                        <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-white"></div>
-                                      </div>
-                                      <div>
-                                          <p className="font-bold text-slate-900">{doc?.name}</p>
-                                          <p className="text-xs text-slate-500 font-medium">{doc?.specialty}</p>
-                                      </div>
-                                  </div>
-                                  <StatusBadge status={apt.status} />
-                              </div>
-                              <div className="space-y-3 pt-4 border-t border-slate-50">
-                                <div className="flex items-center gap-3 text-sm text-slate-600">
-                                    <div className="p-2 bg-slate-50 rounded-md group-hover:bg-slate-100 transition-colors">
-                                        <CalIcon className="w-4 h-4 text-slate-500"/> 
-                                    </div>
-                                    <span className="font-medium">{formatDateTime(apt.date).dateOnly}</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-sm text-slate-600">
-                                    <div className="p-2 bg-slate-50 rounded-md group-hover:bg-slate-100 transition-colors">
-                                        <Clock className="w-4 h-4 text-slate-500"/> 
-                                    </div>
-                                    <span className="font-medium">{apt.time}</span>
-                                </div>
-                              </div>
-                          </div>
-                      )
-                  })}
-              </div>
+              myAppointments.map(apt => {
+                const doc = MOCK_DOCTORS.find(d => d.id === apt.doctorId);
+                return (
+                  <div 
+                    key={apt.id} 
+                    className="bg-white border-2 border-gray-200 rounded-xl p-4 lg:p-6 hover:border-black transition-all"
+                  >
+                    <div className="flex flex-col lg:flex-row justify-between gap-4">
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-black">{doc?.name}</h3>
+                        <p className="text-gray-600 mt-1">{doc?.specialty}</p>
+                        <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-700">
+                          <span className="flex items-center gap-2">
+                            <CalIcon className="w-4 h-4" />
+                            {formatDateTime(apt.date).dateOnly}
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <Clock className="w-4 h-4" />
+                            {apt.time}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <StatusBadge status={apt.status} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
             )}
-        </section>
+          </div>
 
-        <AppointmentModal 
+          <AppointmentModal
             open={isModalOpen}
             onOpenChange={setIsModalOpen}
             userId={user.id}
             onAppointmentCreated={handleCreateAppointment}
-        />
+          />
+        </div>
       </div>
     );
   }
 
-  // ----------------------------------------------------------------------
-  // VIEW 2: LANDING PAGE (Not Logged In, showLanding = true)
-  // ----------------------------------------------------------------------
-  if (showLanding) {
-    return (
-      <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-blue-100 selection:text-blue-900">
-        {/* Navigation */}
-        <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-slate-100">
-            <div className="flex items-center gap-2.5 font-bold text-xl tracking-tight cursor-pointer" onClick={() => setShowLanding(true)}>
-                <div className="bg-blue-600 text-white p-1.5 rounded-lg shadow-lg shadow-blue-600/20">
-                    <HeartPulse className="w-5 h-5" />
-                </div>
-                CarePulse
-            </div>
-            <div className="flex items-center gap-4">
-                 <Button onClick={() => openAuth('signin')} variant="ghost" className="hidden sm:flex hover:bg-slate-50 text-slate-600 font-medium">
-                    Log In
-                 </Button>
-                 <Button onClick={() => openAuth('signup')} className="rounded-full bg-slate-900 hover:bg-slate-800 shadow-lg shadow-slate-900/20 px-6">
-                    Sign Up
-                 </Button>
-            </div>
-        </nav>
-
-        {/* Hero Section */}
-        <main className="relative pt-16 pb-24 lg:pt-32 lg:pb-40 overflow-hidden">
-            {/* Background Decor */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50 via-slate-50 to-white -z-10"></div>
-            
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
-                    <div className="space-y-8 text-center lg:text-left">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-blue-100 text-blue-700 text-sm font-medium animate-in fade-in slide-in-from-bottom-4 duration-500 shadow-sm">
-                            <span className="relative flex h-2.5 w-2.5">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
-                            </span>
-                            Smart Healthcare Management
-                        </div>
-                        
-                        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 mb-8 leading-[1.1]">
-                            The Pulse of <br className="hidden sm:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">
-                                Your Health.
-                            </span>
-                        </h1>
-                        
-                        <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                            Streamline your medical experience. Book appointments with top specialists, access your records, and manage your health journey in one secure place.
-                        </p>
-                        
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
-                            <Button size="lg" className="rounded-full px-8 h-14 text-lg w-full sm:w-auto bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-600/20" onClick={() => openAuth('signup')}>
-                                Get Started <ArrowRight className="ml-2 w-5 h-5" />
-                            </Button>
-                            <Button variant="outline" size="lg" className="rounded-full px-8 h-14 text-lg w-full sm:w-auto bg-white hover:bg-slate-50 border-slate-200 text-slate-700" onClick={() => openAuth('signin')}>
-                                Patient Login
-                            </Button>
-                        </div>
-                        
-                        <div className="mt-12 flex items-center justify-center lg:justify-start gap-8 text-slate-500 text-sm font-medium">
-                            <span className="flex items-center gap-2"><UserCheck className="w-4 h-4 text-blue-600" /> Verified Doctors</span>
-                            <span className="flex items-center gap-2"><Lock className="w-4 h-4 text-slate-900" /> HIPAA Compliant</span>
-                            <span className="flex items-center gap-2"><Star className="w-4 h-4 text-yellow-500" /> 4.9/5 Rating</span>
-                        </div>
-                    </div>
-
-                    <div className="relative hidden lg:block">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-blue-100 to-slate-50 rounded-[2.5rem] transform rotate-3 scale-105 -z-10 opacity-60"></div>
-                        <div className="bg-white p-3 rounded-[2rem] shadow-2xl border border-slate-100 relative">
-                            <img 
-                                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800" 
-                                alt="Medical Professional" 
-                                className="rounded-[1.5rem] w-full h-auto object-cover grayscale-[10%]"
-                            />
-                            {/* Floating Card */}
-                            <div className="absolute bottom-8 -left-8 bg-white/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-slate-100 max-w-[260px] animate-in fade-in slide-in-from-right-8 duration-700 delay-200">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                        <Stethoscope className="w-5 h-5" />
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-slate-900 text-sm">Dr. Sarah Johnson</p>
-                                        <p className="text-xs text-slate-500">Cardiologist • Available Today</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-2 mt-2">
-                                    <div className="h-2 w-16 bg-blue-500 rounded-full"></div>
-                                    <div className="h-2 w-8 bg-slate-200 rounded-full"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        {/* Features Section */}
-        <section className="py-24 bg-white">
-             <div className="max-w-7xl mx-auto px-6">
-                <div className="text-center max-w-2xl mx-auto mb-16">
-                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Why CarePulse?</h2>
-                    <p className="mt-4 text-slate-600 text-lg">We've redesigned the healthcare experience to put you in control.</p>
-                </div>
-                
-                <div className="grid md:grid-cols-3 gap-8">
-                   {[
-                      {
-                        icon: <CalIcon className="w-6 h-6 text-white" />,
-                        title: "Instant Scheduling",
-                        desc: "Say goodbye to hold music. View real-time availability and book appointments instantly."
-                      },
-                      {
-                        icon: <Shield className="w-6 h-6 text-white" />,
-                        title: "Secure Health Records",
-                        desc: "Your data is encrypted with bank-level security. Access your history anytime, anywhere."
-                      },
-                      {
-                        icon: <HeartPulse className="w-6 h-6 text-white" />,
-                        title: "Proactive Care",
-                        desc: "Automated reminders and health tracking help you stay on top of your wellness journey."
-                      }
-                   ].map((feature, i) => (
-                      <div key={i} className="group bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-blue-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                          <div className="w-12 h-12 bg-slate-900 group-hover:bg-blue-600 transition-colors rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-slate-900/10 group-hover:shadow-blue-600/20">
-                              {feature.icon}
-                          </div>
-                          <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
-                          <p className="text-slate-600 leading-relaxed">{feature.desc}</p>
-                      </div>
-                   ))}
-                </div>
-             </div>
-        </section>
-
-        <footer className="bg-slate-900 text-slate-400 py-12">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div className="flex items-center gap-2 font-bold text-xl text-white tracking-tight">
-                    <div className="bg-blue-600 p-1.5 rounded-lg">
-                        <HeartPulse className="w-5 h-5 text-white" />
-                    </div>
-                    CarePulse
-                </div>
-                <p className="text-sm">© 2024 CarePulse Health Inc. All rights reserved.</p>
-                <div className="flex gap-6 text-sm font-medium">
-                    <a href="#" className="hover:text-white transition-colors">Privacy</a>
-                    <a href="#" className="hover:text-white transition-colors">Terms</a>
-                    <Link href="/admin" className="hover:text-white transition-colors">Admin</Link>
-                </div>
-            </div>
-        </footer>
-      </div>
-    );
-  }
-
-  // ----------------------------------------------------------------------
-  // VIEW 3: LOGIN / SIGNUP FORM (Not Logged In, showLanding = false)
-  // ----------------------------------------------------------------------
+  // LANDING PAGE (DEFAULT VIEW)
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-       {/* Background pattern */}
-       <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#0f172a 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav className="border-b border-gray-200 sticky top-0 bg-white z-50">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                <Activity className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-black">MedCare</span>
+            </div>
 
-       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-100 relative z-10 animate-in zoom-in-95 duration-300">
-           {/* Header */}
-           <div className="bg-slate-900 p-8 text-center relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-900/20 to-transparent"></div>
-                <div className="relative z-10">
-                    <div className="mx-auto bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-blue-600/30 ring-4 ring-white/10">
-                        <HeartPulse className="w-8 h-8 text-white" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-white tracking-tight">
-                        {authMode === 'signin' ? 'Welcome Back' : 'Create Account'}
-                    </h2>
-                    <p className="text-slate-400 mt-2 text-sm">
-                        {authMode === 'signin' 
-                            ? 'Enter your phone number to access your account.' 
-                            : 'Join CarePulse to manage your health journey.'}
-                    </p>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#features" className="text-gray-700 hover:text-black font-medium transition-colors">
+                Features
+              </a>
+              <a href="#how-it-works" className="text-gray-700 hover:text-black font-medium transition-colors">
+                How It Works
+              </a>
+              <a href="#auth" className="text-gray-700 hover:text-black font-medium transition-colors">
+                Login
+              </a>
+              <Link 
+                href="/admin" 
+                className="text-sm text-gray-600 hover:text-black transition-colors"
+              >
+                Admin
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-black"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-gray-200 py-4 space-y-4">
+              <a 
+                href="#features" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-gray-700 hover:text-black font-medium"
+              >
+                Features
+              </a>
+              <a 
+                href="#how-it-works" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-gray-700 hover:text-black font-medium"
+              >
+                How It Works
+              </a>
+              <a 
+                href="#auth" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-gray-700 hover:text-black font-medium"
+              >
+                Login
+              </a>
+              <Link 
+                href="/admin" 
+                className="block text-gray-600 hover:text-black"
+              >
+                Admin Access
+              </Link>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 lg:px-8 py-16 lg:py-24">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl lg:text-6xl xl:text-7xl font-bold text-black mb-6 leading-tight">
+            Healthcare Made
+            <br />
+            <span className="relative inline-block mt-2">
+              Simple & Accessible
+              <div className="absolute bottom-0 left-0 w-full h-3 bg-gray-200 -z-10"></div>
+            </span>
+          </h1>
+          
+          <p className="text-lg lg:text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+            Book appointments with verified doctors, manage your health records, and access quality healthcare from anywhere.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#auth">
+              <Button className="bg-black hover:bg-gray-800 text-white px-8 py-6 text-base lg:text-lg w-full sm:w-auto">
+                Get Started
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </a>
+            <a href="#features">
+              <Button 
+                variant="outline" 
+                className="border-2 border-black text-black hover:bg-black hover:text-white px-8 py-6 text-base lg:text-lg w-full sm:w-auto"
+              >
+                Learn More
+                <ChevronDown className="w-5 h-5 ml-2" />
+              </Button>
+            </a>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4 lg:gap-8 mt-16 lg:mt-20 max-w-2xl mx-auto">
+            <div className="text-center">
+              <div className="text-3xl lg:text-4xl font-bold text-black">500+</div>
+              <div className="text-sm lg:text-base text-gray-600 mt-1">Doctors</div>
+            </div>
+            <div className="text-center border-x border-gray-300">
+              <div className="text-3xl lg:text-4xl font-bold text-black">10k+</div>
+              <div className="text-sm lg:text-base text-gray-600 mt-1">Patients</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl lg:text-4xl font-bold text-black">24/7</div>
+              <div className="text-sm lg:text-base text-gray-600 mt-1">Support</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="bg-gray-50 py-16 lg:py-24">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-black mb-4">
+              Why Choose MedCare
+            </h2>
+            <p className="text-gray-600 text-lg">
+              Everything you need for better healthcare management
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+            {/* Feature 1 */}
+            <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 lg:p-8 hover:border-black transition-all">
+              <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-6">
+                <Stethoscope className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-black mb-3">Verified Doctors</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Access certified healthcare professionals across multiple specialties with proven expertise.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 lg:p-8 hover:border-black transition-all">
+              <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-6">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-black mb-3">Secure Platform</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Your health data is protected with enterprise-grade security and complete privacy.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 lg:p-8 hover:border-black transition-all">
+              <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-6">
+                <CalIcon className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-black mb-3">Easy Scheduling</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Book, reschedule, or cancel appointments instantly with our intuitive system.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-16 lg:py-24">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-black mb-4">
+              How It Works
+            </h2>
+            <p className="text-gray-600 text-lg">
+              Get started in three simple steps
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-12 max-w-5xl mx-auto">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
+                1
+              </div>
+              <h3 className="text-xl font-bold text-black mb-3">Sign Up</h3>
+              <p className="text-gray-600">
+                Create your account with just your phone number in seconds
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
+                2
+              </div>
+              <h3 className="text-xl font-bold text-black mb-3">Book Appointment</h3>
+              <p className="text-gray-600">
+                Choose your doctor, select a time slot that works for you
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
+                3
+              </div>
+              <h3 className="text-xl font-bold text-black mb-3">Get Care</h3>
+              <p className="text-gray-600">
+                Meet with your doctor and receive quality healthcare
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Login/Signup Section */}
+      <section id="auth" className="bg-gray-50 py-16 lg:py-24">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="max-w-md mx-auto">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-2xl mb-4">
+                <Activity className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-3xl font-bold text-black mb-2">Get Started</h2>
+              <p className="text-gray-600">Enter your phone number to continue</p>
+            </div>
+
+            <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 lg:p-8">
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-black mb-2">
+                    Phone Number
+                  </label>
+                  <Input
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                    className="w-full border-2 border-gray-300 focus:border-black rounded-lg px-4 py-3"
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Demo: Use <span className="font-semibold">0000</span> for admin access
+                  </p>
                 </div>
-           </div>
 
-           {/* Form */}
-           <div className="p-8 pt-6">
-               <form onSubmit={handleLogin} className="space-y-6">
-                   <div className="space-y-2">
-                       <label className="text-sm font-medium text-slate-700 ml-1">Phone Number</label>
-                       <div className="relative">
-                            <Phone className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                            <Input 
-                                placeholder="+1 (555) 000-0000" 
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                className="pl-10 h-11 bg-slate-50 border-slate-200 focus:bg-white focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                required
-                                type="tel"
-                                autoFocus
-                            />
-                       </div>
-                   </div>
-                   
-                   <Button 
-                        type="submit" 
-                        className="w-full h-11 text-base bg-slate-900 hover:bg-slate-800 shadow-lg shadow-slate-900/10" 
-                        disabled={isLoading}
-                   >
-                        {isLoading ? (
-                            <span className="flex items-center gap-2">
-                                <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>
-                                Verifying...
-                            </span>
-                        ) : (authMode === 'signin' ? 'Sign In' : 'Get Started')}
-                   </Button>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-black hover:bg-gray-800 text-white py-6 text-base"
+                >
+                  Continue
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </form>
 
-                   <div className="relative">
-                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
-                        <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-slate-500 font-medium tracking-wider">Or</span></div>
-                   </div>
-                   
-                   <div className="text-center space-y-4">
-                        {authMode === 'signin' ? (
-                            <p className="text-sm text-slate-600">
-                                New to CarePulse?{' '}
-                                <button type="button" onClick={() => setAuthMode('signup')} className="font-semibold text-blue-600 hover:underline">
-                                    Sign Up
-                                </button>
-                            </p>
-                        ) : (
-                             <p className="text-sm text-slate-600">
-                                Already have an account?{' '}
-                                <button type="button" onClick={() => setAuthMode('signin')} className="font-semibold text-blue-600 hover:underline">
-                                    Log In
-                                </button>
-                            </p>
-                        )}
-                        
-                        <div className="pt-2">
-                             <button 
-                                type="button" 
-                                onClick={() => setShowLanding(true)}
-                                className="text-xs text-slate-400 hover:text-slate-600"
-                            >
-                                Return to Home
-                            </button>
-                        </div>
-                   </div>
-               </form>
-           </div>
-       </div>
+              <div className="flex items-center justify-center gap-6 lg:gap-8 mt-8 pt-6 border-t border-gray-200">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <CheckCircle className="w-4 h-4 text-black" />
+                  Verified
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Shield className="w-4 h-4 text-black" />
+                  Secure
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 py-8">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-black rounded-lg flex items-center justify-center">
+                <Activity className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-bold text-black">MedCare</span>
+            </div>
+            <p className="text-sm text-gray-600">
+              © 2025 MedCare Connect. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
