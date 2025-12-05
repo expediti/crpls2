@@ -92,12 +92,13 @@ export default function Home() {
             })}
           </div>
 
-          <AppointmentModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            onSubmit={handleCreateAppointment}
-            doctors={MOCK_DOCTORS}
-          />
+         <AppointmentModal
+  open={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+  onSubmit={handleCreateAppointment}
+  doctors={MOCK_DOCTORS}
+/>
+
         </div>
       </div>
     );
