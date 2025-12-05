@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormFieldType } from '@/lib/Type';
-import { Input } from './ui/input';
+import { Input } from './ui/Input';
 import { Control, Controller } from 'react-hook-form';
 import { Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
