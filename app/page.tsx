@@ -94,10 +94,11 @@ export default function Home() {
 
          <AppointmentModal
   open={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-  onSubmit={handleCreateAppointment}
-  doctors={MOCK_DOCTORS}
+  onOpenChange={setIsModalOpen}
+  userId={user.id}
+  onAppointmentCreated={handleCreateAppointment}
 />
+
 
         </div>
       </div>
