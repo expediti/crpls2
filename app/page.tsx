@@ -1,12 +1,9 @@
 'use client';
 
-import { Input } from './ui/Input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
-import { 
-  Shield, ArrowRight, Activity, Calendar as CalIcon, Clock, 
-  Stethoscope, Users, CheckCircle, Menu, X, ChevronDown 
-} from 'lucide-react';
+import { Shield, ArrowRight, Activity, Calendar as CalIcon, Clock, Stethoscope, CheckCircle, Menu, X, ChevronDown } from 'lucide-react';
+
 import { MOCK_DOCTORS, INITIAL_APPOINTMENTS } from '@/constants';
 import { Appointment, User } from '@/lib/Type';
 import { StatusBadge } from '@/components/StatusBadge';
