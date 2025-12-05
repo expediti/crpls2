@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { 
   Shield, ArrowRight, Activity, Calendar as CalIcon, Clock, 
@@ -21,7 +21,6 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Simple Mock Login
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (phone === '0000') {
@@ -53,12 +52,10 @@ export default function Home() {
     setAppointments([...appointments, newApt]);
   };
 
-  // PATIENT DASHBOARD VIEW
   if (user) {
     const myAppointments = appointments.filter(a => a.patientId === user.id || a.patientId === 'p1');
     return (
       <div className="min-h-screen bg-white">
-        {/* Dashboard Navigation */}
         <nav className="border-b border-gray-200 sticky top-0 bg-white z-50">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="flex items-center justify-between h-16">
@@ -79,7 +76,6 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* Dashboard Content */}
         <div className="container mx-auto px-4 lg:px-8 py-8 lg:py-12">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
             <div>
@@ -95,7 +91,6 @@ export default function Home() {
             </Button>
           </div>
 
-          {/* Appointments Grid */}
           <div className="grid gap-4 lg:gap-6">
             {myAppointments.length === 0 ? (
               <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-xl">
@@ -153,14 +148,11 @@ export default function Home() {
     );
   }
 
-  // LANDING PAGE (DEFAULT VIEW)
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
       <nav className="border-b border-gray-200 sticky top-0 bg-white z-50">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <Activity className="w-5 h-5 text-white" />
@@ -168,7 +160,6 @@ export default function Home() {
               <span className="text-xl font-bold text-black">MedCare</span>
             </div>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-gray-700 hover:text-black font-medium transition-colors">
                 Features
@@ -187,7 +178,6 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 text-black"
@@ -196,7 +186,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-gray-200 py-4 space-y-4">
               <a 
@@ -231,7 +220,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="container mx-auto px-4 lg:px-8 py-16 lg:py-24">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl lg:text-6xl xl:text-7xl font-bold text-black mb-6 leading-tight">
@@ -265,7 +253,6 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Stats */}
           <div className="grid grid-cols-3 gap-4 lg:gap-8 mt-16 lg:mt-20 max-w-2xl mx-auto">
             <div className="text-center">
               <div className="text-3xl lg:text-4xl font-bold text-black">500+</div>
@@ -283,7 +270,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="bg-gray-50 py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
@@ -296,7 +282,6 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-            {/* Feature 1 */}
             <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 lg:p-8 hover:border-black transition-all">
               <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-6">
                 <Stethoscope className="w-6 h-6 text-white" />
@@ -307,7 +292,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Feature 2 */}
             <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 lg:p-8 hover:border-black transition-all">
               <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-6">
                 <Shield className="w-6 h-6 text-white" />
@@ -318,7 +302,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Feature 3 */}
             <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 lg:p-8 hover:border-black transition-all">
               <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-6">
                 <CalIcon className="w-6 h-6 text-white" />
@@ -332,7 +315,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works Section */}
       <section id="how-it-works" className="py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
@@ -378,7 +360,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Login/Signup Section */}
       <section id="auth" className="bg-gray-50 py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="max-w-md mx-auto">
@@ -433,7 +414,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-gray-200 py-8">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
